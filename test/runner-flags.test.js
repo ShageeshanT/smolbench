@@ -11,7 +11,7 @@ test("runner parallel returns one row per provider", async () => {
   for (const id of ["a", "b", "c"]) {
     register({
       id, model: "m1",
-      call: async () => { calls++; await new Promise((r) => setTimeout(r, 10)); return { text: id, latencyMs: 10, promptTokens: 1, completionTokens: 1 }; },
+      call: async () => { calls++; await new Promise((r) => setTimeout(r, 50)); return { text: id, latencyMs: 50, promptTokens: 1, completionTokens: 1 }; },
     });
   }
   const start = Date.now();
@@ -19,8 +19,9 @@ test("runner parallel returns one row per provider", async () => {
   const elapsed = Date.now() - start;
   assert.equal(rows.length, 3);
   assert.equal(calls, 3);
-  // sequential would be ~30ms+, parallel should comfortably finish under 25ms
-  assert.ok(elapsed < 30, `parallel elapsed ${elapsed}ms suggests sequential`);
+  // sequential would be ~150ms+, parallel should comfortably finish under 130ms
+  // even on slow CI runners. Loose bound to avoid timing flake on Node 22.
+  assert.ok(elapsed < 130, `parallel elapsed ${elapsed}ms suggests sequential`);
   clear();
 });
 
