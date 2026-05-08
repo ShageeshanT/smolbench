@@ -1,0 +1,22 @@
+# Real world suite: summarise a short technical paragraph in exactly 25 words.
+# The judge scores on word count compliance and information density.
+
+suite: summarisation
+prompts:
+  - id: rust-borrow
+    system: |
+      Summarise the user's text in EXACTLY 25 words. Count words carefully.
+    user: |
+      The Rust borrow checker enforces ownership rules at compile time. Each value has one owner; references are either shared (immutable) or exclusive (mutable). The compiler rejects programs where references could outlive their referents or where multiple mutable references coexist. This eliminates a class of memory safety bugs without garbage collection.
+    meta:
+      expected: 25 words covering ownership, references, compile-time, memory safety
+      target_word_count: 25
+
+  - id: kafka
+    system: |
+      Summarise the user's text in EXACTLY 25 words. Count words carefully.
+    user: |
+      Apache Kafka is a distributed event streaming platform. Producers append events to ordered, partitioned logs called topics. Consumers read at their own pace by tracking offsets. Replication across brokers gives durability; partitioning gives horizontal throughput. Originally built at LinkedIn, it now backs real-time pipelines at most large companies.
+    meta:
+      expected: 25 words covering distributed log, producers/consumers, replication, partitions
+      target_word_count: 25
