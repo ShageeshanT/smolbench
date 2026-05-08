@@ -1,0 +1,25 @@
+{
+  "name": "smolbench",
+  "version": "0.0.1",
+  "description": "Workload-specific micro-benchmarks for LLM-powered apps",
+  "type": "module",
+  "license": "MIT",
+  "bin": {
+    "smolbench": "./cli.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "files": [
+    "cli.js",
+    "lib/",
+    "examples/",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "node --test test/"
+  },
+  "keywords": ["llm", "benchmark", "evaluation", "ai"],
+  "repository": "github:ShageeshanT/smolbench"
+}
