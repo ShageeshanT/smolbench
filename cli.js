@@ -1,15 +1,17 @@
 #!/usr/bin/env node
-// smolbench CLI. v0.2.0: --version, runner cache+parallel via flags, web UI.
+// smolbench CLI v0.3.0. Adds --providers, --filter, validate, export, report.
 
 import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync } from "node:fs";
 import { join, basename } from "node:path";
 import { parseYaml } from "./lib/yaml.js";
-import { register } from "./lib/registry.js";
+import { register, list as listProviders } from "./lib/registry.js";
 import { runSuite } from "./lib/runner.js";
 import { rankRows } from "./lib/score.js";
 import { clearAll, cacheDir } from "./lib/cache.js";
 import { diff, regressions } from "./lib/diff.js";
 import { version } from "./lib/version.js";
+import { renderHtml } from "./lib/report-html.js";
+import { renderCsv } from "./lib/report-csv.js";
 import { createOpenAICompatProvider } from "./lib/providers/openai-compat.js";
 import { createAnthropicProvider } from "./lib/providers/anthropic.js";
 import { createGoogleProvider } from "./lib/providers/google.js";
@@ -18,9 +20,11 @@ import { createNvidiaProvider } from "./lib/providers/nvidia.js";
 const HELP = `smolbench v${version()}, workload-specific LLM benchmarks.
 
 Usage:
-  smolbench run <suite.yaml> [--parallel] [--cache]
+  smolbench run <suite.yaml> [--parallel] [--cache] [--providers a,b] [--filter id1,id2]
   smolbench leaderboard <run>
   smolbench compare <a> <b>
+  smolbench export <run> [--format html|csv|md] [--out path]
+  smolbench validate <suite.yaml>
   smolbench init
   smolbench cache clear
   smolbench --version | -v
@@ -42,15 +46,41 @@ function configureProviders(cfg) {
   }
 }
 
+function parseFlags(args) {
+  const flags = {};
+  const positional = [];
+  for (let i = 0; i < args.length; i++) {
+    const a = args[i];
+    if (a.startsWith("--")) {
+      const eq = a.indexOf("=");
+      if (eq > 0) flags[a.slice(2, eq)] = a.slice(eq + 1);
+      else if (args[i + 1] && !args[i + 1].startsWith("--")) { flags[a.slice(2)] = args[++i]; }
+      else flags[a.slice(2)] = true;
+    } else { positional.push(a); }
+  }
+  return { flags, positional };
+}
+
 async function cmdRun(args) {
-  const flags = new Set(args.filter((a) => a.startsWith("--")));
-  const positional = args.filter((a) => !a.startsWith("--"));
+  const { flags, positional } = parseFlags(args);
   const suitePath = positional[0];
   if (!suitePath) die("run needs <suite.yaml>");
   configureProviders(loadConfig());
+  let providers = listProviders();
+  if (flags.providers) {
+    const wanted = String(flags.providers).split(",").map((s) => s.trim());
+    providers = providers.filter((p) => wanted.includes(p.id));
+    if (!providers.length) die(`no providers matched --providers=${flags.providers}`);
+  }
   const suite = parseYaml(readFileSync(suitePath, "utf8"));
   if (!suite?.prompts?.length) die("suite has no prompts");
-  const rows = await runSuite(suite.prompts, { parallel: flags.has("--parallel"), cache: flags.has("--cache") });
+  let prompts = suite.prompts;
+  if (flags.filter) {
+    const ids = new Set(String(flags.filter).split(",").map((s) => s.trim()));
+    prompts = prompts.filter((p) => ids.has(p.id));
+    if (!prompts.length) die(`no prompts matched --filter=${flags.filter}`);
+  }
+  const rows = await runSuite(prompts, { parallel: !!flags.parallel, cache: !!flags.cache, providers });
   const ts = new Date().toISOString().replace(/[:.]/g, "-");
   mkdirSync(join(process.cwd(), "runs"), { recursive: true });
   const outPath = join(process.cwd(), "runs", `${basename(suitePath, ".yaml")}-${ts}.json`);
@@ -97,11 +127,56 @@ function cmdCompare(aPath, bPath) {
   process.stdout.write(lines.join("\n") + "\n");
 }
 
+function cmdExport(args) {
+  const { flags, positional } = parseFlags(args);
+  const runPath = positional[0];
+  if (!runPath) die("export needs <run.json>");
+  const run = JSON.parse(readFileSync(runPath, "utf8"));
+  const ranked = rankRows(run.rows || []);
+  const fmt = flags.format || "html";
+  let body;
+  if (fmt === "html") body = renderHtml(run, ranked);
+  else if (fmt === "csv") body = renderCsv(ranked);
+  else if (fmt === "md") return cmdLeaderboard(runPath);
+  else die(`unknown --format ${fmt}, try html, csv, md`);
+  if (flags.out) {
+    writeFileSync(flags.out, body);
+    process.stdout.write(`smolbench: wrote ${flags.out}\n`);
+  } else {
+    process.stdout.write(body);
+  }
+}
+
+function cmdValidate(suitePath) {
+  if (!suitePath) die("validate needs <suite.yaml>");
+  const text = readFileSync(suitePath, "utf8");
+  let parsed;
+  try { parsed = parseYaml(text); } catch (e) { die(`yaml parse error: ${e.message}`); }
+  const errors = [];
+  if (!parsed) errors.push("empty document");
+  if (!parsed?.suite) errors.push("missing suite name (top-level 'suite:')");
+  if (!Array.isArray(parsed?.prompts)) errors.push("missing 'prompts' list");
+  else {
+    parsed.prompts.forEach((p, i) => {
+      if (!p?.id) errors.push(`prompts[${i}]: missing id`);
+      if (!p?.user) errors.push(`prompts[${i}]: missing user`);
+    });
+    const ids = parsed.prompts.map((p) => p?.id).filter(Boolean);
+    const dup = ids.find((id, i) => ids.indexOf(id) !== i);
+    if (dup) errors.push(`duplicate prompt id: ${dup}`);
+  }
+  if (errors.length) {
+    process.stderr.write("smolbench: validation failed\n");
+    for (const e of errors) process.stderr.write(`  - ${e}\n`);
+    process.exit(2);
+  }
+  process.stdout.write(`smolbench: ${suitePath} OK (suite=${parsed.suite}, ${parsed.prompts.length} prompts)\n`);
+}
+
 function cmdInit() {
   const path = join(process.cwd(), ".smolbench.yaml");
   if (existsSync(path)) die(`.smolbench.yaml already exists at ${path}`);
-  writeFileSync(path, `# smolbench config. Run: smolbench run examples/hello.yaml
-providers:
+  writeFileSync(path, `providers:
   - id: anthropic
     kind: anthropic
     model: claude-haiku-4-5
@@ -130,6 +205,8 @@ async function main() {
   if (cmd === "run") return cmdRun(argv.slice(1));
   if (cmd === "leaderboard") return cmdLeaderboard(argv[1]);
   if (cmd === "compare") return cmdCompare(argv[1], argv[2]);
+  if (cmd === "export") return cmdExport(argv.slice(1));
+  if (cmd === "validate") return cmdValidate(argv[1]);
   if (cmd === "init") return cmdInit();
   if (cmd === "cache") return cmdCache(argv[1]);
   die(`command "${cmd}" not implemented`);
