@@ -2,40 +2,41 @@
 
 All notable changes to smolbench. Format follows Keep a Changelog, dates ISO.
 
+## [0.3.0] - 2026-05-08
+
+### Added
+
+- `lib/retries.js`: exponential backoff retry helper, full jitter, retries on 429 and 5xx.
+- Provider adapters now wrap fetch in `withRetries` (3 attempts default, override per provider).
+- `smolbench run --providers a,b`: run only the named subset of registered providers.
+- `smolbench run --filter id1,id2`: run only the named prompt ids from the suite.
+- `smolbench export <run> --format html|csv|md [--out path]`: export a run as a self-contained HTML report, CSV, or markdown.
+- `lib/report-html.js`: dark-mode single-file HTML renderer, no CDN.
+- `lib/report-csv.js`: CSV exporter with proper field escaping.
+- `smolbench validate <suite.yaml>`: schema check on suite YAML, surfaces missing ids, missing prompts, duplicate ids.
+- `scripts/npm-publish-dry.sh`: pre-flight pack + tests before `npm publish`.
+- `Formula/smolbench.rb`: Homebrew formula for tap install.
+
+### Changed
+
+- Bumped to 0.3.0 to mark Phase 5 close shipping.
+
 ## [0.2.0] - 2026-05-07
 
 ### Added
 
-- `web/index.html`, `web/app.js`, `web/style.css`: static leaderboard renderer, dark mode, no JS framework.
-- `.github/workflows/pages.yml`: deploy `web/` to GitHub Pages on push to master.
-- `lib/version.js`: version resolver that reads from package.json without bundlers.
-- `smolbench --version` / `-v` flag.
-- `runner.parallel` option (`smolbench run --parallel`): run all providers concurrently per prompt.
-- `runner.cache` option (`smolbench run --cache`): hit-miss the on-disk cache during runs.
-- `runs/index.json` auto-regenerated after each `smolbench run` so the static UI can list runs.
-
-### Changed
-
-- `smolbench compare` now uses `lib/diff.js` (was inline in cli.js). Same output, deduplicated logic.
-- Bumped to 0.2.0 to mark the Phase 4 web UI shipping.
+- Web UI: index.html, app.js, style.css, dark mode static leaderboard.
+- GitHub Pages deploy via `.github/workflows/pages.yml`.
+- `lib/version.js`, `smolbench --version`.
+- `smolbench run --parallel`, `--cache` flags.
+- `runs/index.json` auto regenerated.
 
 ## [0.1.0] - 2026-05-06
 
 ### Added
 
-- `smolbench run <suite.yaml>`: execute a YAML prompt suite across all registered providers, write run JSON to `runs/`.
-- `smolbench leaderboard <run.json>`: render a markdown leaderboard ranked by composite score.
-- `smolbench compare <a.json> <b.json>`: per-prompt latency / cost / quality deltas between two runs.
-- `smolbench init`: scaffold `.smolbench.yaml` in cwd.
-- `smolbench cache clear`: drop the on-disk `~/.smolbench/cache` directory.
-- Provider adapters: OpenAI-compatible, Anthropic, Google Gemini, NVIDIA NIM.
-- Composite scoring (`lib/score.js`) weighting quality, cost, latency.
-- LLM judge harness (`lib/judge.js`) with a calibrated 0-10 rubric.
-- Pricing table (`lib/cost.js`).
-- Result cache (`lib/cache.js`) keyed by SHA of (model, prompt).
-- Mini YAML reader (`lib/yaml.js`).
-- Run-over-run diff (`lib/diff.js`) with regression thresholds.
+- Run, leaderboard, compare, init, cache clear commands.
+- Provider adapters (Anthropic, Google, NVIDIA, OpenAI-compat).
+- Composite scoring, LLM judge, pricing table, result cache, YAML reader, run diff.
 - Real-world suites: hello, code-review, summarisation, classification, extraction.
-- Smoke tests via `node --test`.
-- CI workflow on Node 18, 20, 22.
-- PR + issue templates, CHANGELOG.
+- Smoke tests, CI workflow, PR + issue templates, CHANGELOG.
