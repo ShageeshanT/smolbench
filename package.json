@@ -1,6 +1,6 @@
 {
   "name": "smolbench",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Workload-specific micro-benchmarks for LLM-powered apps",
   "type": "module",
   "license": "MIT",
@@ -19,7 +19,8 @@
     "LICENSE"
   ],
   "scripts": {
-    "test": "node --test test/"
+    "test": "node --test test/",
+    "publish:dry": "bash scripts/npm-publish-dry.sh"
   },
   "keywords": ["llm", "benchmark", "evaluation", "ai"],
   "repository": "github:ShageeshanT/smolbench"
