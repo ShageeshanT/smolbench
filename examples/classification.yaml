@@ -1,0 +1,40 @@
+# Real world suite: classify a short customer message into one of a fixed set
+# of intent labels. The judge scores on label correctness only.
+
+suite: classification
+prompts:
+  - id: refund-clear
+    system: |
+      Classify the message into ONE of: refund, shipping, product_question, complaint, other.
+      Reply with only the label, lowercase, no punctuation.
+    user: |
+      I want my money back, the headphones never arrived.
+    meta:
+      expected: refund
+
+  - id: shipping-clear
+    system: |
+      Classify the message into ONE of: refund, shipping, product_question, complaint, other.
+      Reply with only the label, lowercase, no punctuation.
+    user: |
+      Where is my package? It has been three weeks.
+    meta:
+      expected: shipping
+
+  - id: product-question
+    system: |
+      Classify the message into ONE of: refund, shipping, product_question, complaint, other.
+      Reply with only the label, lowercase, no punctuation.
+    user: |
+      Are the batteries replaceable on the model X37?
+    meta:
+      expected: product_question
+
+  - id: ambiguous
+    system: |
+      Classify the message into ONE of: refund, shipping, product_question, complaint, other.
+      Reply with only the label, lowercase, no punctuation.
+    user: |
+      You guys are unbelievable, I have called five times.
+    meta:
+      expected: complaint
