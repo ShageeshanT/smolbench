@@ -1,6 +1,6 @@
 {
   "name": "smolbench",
-  "version": "0.0.1",
+  "version": "0.2.0",
   "description": "Workload-specific micro-benchmarks for LLM-powered apps",
   "type": "module",
   "license": "MIT",
@@ -14,6 +14,7 @@
     "cli.js",
     "lib/",
     "examples/",
+    "web/",
     "README.md",
     "LICENSE"
   ],
