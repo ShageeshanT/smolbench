@@ -2,58 +2,53 @@
 
 Tasks for the incremental commit loop. Each entry is a small, self-contained commit.
 
-## Phase 1, scaffold (week 1)
+## Phase 1, scaffold
 
 - [x] Initial commit (auto_init)
-- [x] README.md, why and what
-- [x] PLAN.md, this file
-- [x] package.json, name, version, license, type=module
-- [x] .editorconfig, formatting rules
-- [x] lib/types.js, JSDoc typedefs for Prompt, Provider, Result
-- [x] lib/registry.js, provider registry singleton
-- [x] lib/runner.js, fan-out runner with per-provider try/catch
-- [x] lib/providers/openai-compat.js, OpenAI-compat adapter
-- [x] lib/providers/anthropic.js, Anthropic Messages API adapter
-- [x] lib/providers/google.js, Gemini API adapter
-- [x] lib/providers/nvidia.js, thin alias over openai-compat
-- [x] cli.js, argv parsing and run command
-- [x] examples/hello.yaml, sample prompt suite
-- [x] CONTRIBUTING.md, PR shape and commit-style notes
+- [x] README.md
+- [x] PLAN.md
+- [x] package.json
+- [x] .editorconfig
+- [x] lib/types.js, lib/registry.js, lib/runner.js
+- [x] lib/providers/{openai-compat, anthropic, google, nvidia}.js
+- [x] cli.js
+- [x] examples/hello.yaml
+- [x] CONTRIBUTING.md
 
 ## Phase 2, scoring and cost
 
-- [x] lib/cost.js, per-model pricing table
-- [x] lib/judge.js, LLM-judge eval with rubric
-- [x] lib/score.js, latency, cost, quality composite
-- [x] cli compare command across two runs
+- [x] lib/cost.js, lib/judge.js, lib/score.js
+- [x] cli compare command
 - [x] cli leaderboard markdown emitter
 
 ## Phase 3, persistence and UX
 
-- [x] lib/cache.js, hash prompt+model, cache results to ~/.smolbench
-- [x] cli init command, .smolbench.yaml scaffolder
-- [x] lib/diff.js, run-over-run diff
-- [x] examples/code-review.yaml, real-world suite
-- [x] examples/summarisation.yaml, real-world suite
-- [x] test/smoke.test.js, node --test smoke coverage
+- [x] lib/cache.js
+- [x] cli init command
+- [x] lib/diff.js
+- [x] examples/code-review.yaml, examples/summarisation.yaml
+- [x] test/smoke.test.js
 - [x] cli cache clear subcommand
 
 ## Phase 4, web UI
 
-- [ ] web/index.html, static leaderboard renderer
-- [ ] web/app.js, loads runs/*.json and renders
-- [ ] web/style.css, dark mode, minimal
-- [ ] GitHub Pages deploy via Actions
+- [x] web/index.html, static leaderboard renderer
+- [x] web/app.js, loads runs/*.json and renders
+- [x] web/style.css, dark mode, minimal
+- [x] GitHub Pages deploy via Actions
+- [x] runs/index.json auto regenerated after each run
+- [x] runner parallel mode
+- [x] runner cache integration
+- [x] cli --version flag
+- [x] cli compare uses lib/diff.js
 
 ## Phase 5, distribution
 
-- [x] CHANGELOG.md, semver release notes
-- [x] .github/workflows/ci.yml, run smoke tests on push
+- [x] CHANGELOG.md
+- [x] .github/workflows/ci.yml
 - [x] .github/PULL_REQUEST_TEMPLATE.md
-- [x] .github/ISSUE_TEMPLATE/bug.md
-- [x] .github/ISSUE_TEMPLATE/feature.md
-- [x] examples/classification.yaml, real-world suite
-- [x] examples/extraction.yaml, JSON extraction suite
-- [x] lib/format.js, text formatting helpers
-- [ ] npm publish dry-run
+- [x] .github/ISSUE_TEMPLATE/{bug, feature}.md
+- [x] examples/classification.yaml, examples/extraction.yaml
+- [x] lib/format.js
+- [ ] npm publish dry-run (Phase 5 close)
 - [ ] homebrew formula
