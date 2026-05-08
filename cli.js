@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// smolbench CLI. Phase 2: `run` and `leaderboard` are wired.
+// smolbench CLI. Phase 2: run + leaderboard + compare wired.
 
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { join, basename } from "node:path";
@@ -72,11 +72,35 @@ function cmdLeaderboard(runPath) {
   process.stdout.write(out.join("\n") + "\n");
 }
 
+function cmdCompare(aPath, bPath) {
+  if (!aPath || !bPath) { process.stderr.write("smolbench: compare needs <runA.json> <runB.json>\n"); process.exit(2); }
+  const a = JSON.parse(readFileSync(aPath, "utf8"));
+  const b = JSON.parse(readFileSync(bPath, "utf8"));
+  const indexA = new Map();
+  for (const r of a.rows || []) indexA.set(`${r.provider}:${r.model}:${r.promptId}`, r);
+  const lines = [];
+  lines.push(`# Comparison: ${basename(aPath)} vs ${basename(bPath)}`);
+  lines.push("");
+  lines.push("| Provider | Model | Prompt | Δ latency (ms) | Δ cost (USD) | Δ quality |");
+  lines.push("|---|---|---|---|---|---|");
+  for (const r of b.rows || []) {
+    const k = `${r.provider}:${r.model}:${r.promptId}`;
+    const aRow = indexA.get(k);
+    if (!aRow) continue;
+    const dl = (r.latencyMs || 0) - (aRow.latencyMs || 0);
+    const dc = (r.cost || 0) - (aRow.cost || 0);
+    const dq = (r.quality || 0) - (aRow.quality || 0);
+    lines.push(`| ${r.provider} | ${r.model} | ${r.promptId} | ${dl >= 0 ? "+" : ""}${dl} | ${dc.toFixed(6)} | ${dq.toFixed(2)} |`);
+  }
+  process.stdout.write(lines.join("\n") + "\n");
+}
+
 async function main() {
   const [cmd, ...args] = process.argv.slice(2);
   if (!cmd || cmd === "help" || cmd === "--help" || cmd === "-h") { process.stdout.write(HELP); return; }
   if (cmd === "run") return cmdRun(args[0]);
   if (cmd === "leaderboard") return cmdLeaderboard(args[0]);
+  if (cmd === "compare") return cmdCompare(args[0], args[1]);
   process.stderr.write(`smolbench: command "${cmd}" not implemented yet, see PLAN.md\n`);
   process.exit(2);
 }
