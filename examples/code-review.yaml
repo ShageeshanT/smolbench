@@ -1,0 +1,39 @@
+# Real world suite: short snippets of code with a known issue, ask the model
+# to identify the bug and propose a one-line fix. The judge scores on whether
+# the actual bug is named.
+
+suite: code-review
+prompts:
+  - id: off-by-one
+    system: |
+      You are a senior code reviewer. Reply in 2 sentences: name the bug, propose the fix.
+    user: |
+      Review:
+      function lastN(arr, n) {
+        return arr.slice(arr.length - n - 1);
+      }
+    meta:
+      expected: off-by-one in the slice end index, should be arr.length - n
+      lang: javascript
+
+  - id: race-condition
+    system: |
+      You are a senior code reviewer. Reply in 2 sentences: name the bug, propose the fix.
+    user: |
+      Review:
+      let total = 0;
+      await Promise.all(items.map(async (i) => { total += await fetchPrice(i); }));
+    meta:
+      expected: race on shared total accumulator, use Promise.all results not mutation
+      lang: javascript
+
+  - id: sql-injection
+    system: |
+      You are a senior code reviewer. Reply in 2 sentences: name the bug, propose the fix.
+    user: |
+      Review:
+      const q = "SELECT * FROM users WHERE name = '" + req.query.name + "'";
+      db.query(q);
+    meta:
+      expected: SQL injection, use parameterised query
+      lang: javascript
