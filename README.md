@@ -4,9 +4,7 @@ Workload-specific micro-benchmarks for LLM-powered apps. Run YOUR prompts agains
 
 ## Why this exists
 
-Public benchmarks (MMLU, MT-Bench, HumanEval) tell you which model is best on someone else's tasks. They do not tell you which model is best for the prompts your app actually runs. smolbench closes that gap.
-
-You write your prompts. smolbench fans them out across every provider you have configured (OpenAI-compatible, Anthropic, Google, NVIDIA NIM, MiniMax). It records latency, token cost, and an LLM-judge quality score. Output is a per-prompt leaderboard plus a JSON results file you can diff between runs.
+Public benchmarks (MMLU, MT-Bench, HumanEval) tell you which model is best on someone else's tasks, not yours. smolbench closes that gap.
 
 ## Install
 
@@ -15,29 +13,21 @@ git clone https://github.com/ShageeshanT/smolbench.git
 cd smolbench
 \`\`\`
 
-(npm publish coming in Phase 5.)
-
 ## Quick start
 
 \`\`\`bash
-# 1. Scaffold a config in your project
 node ./cli.js init
-
-# 2. Edit .smolbench.yaml, set provider keys via env or inline
-
-# 3. Run the bundled hello suite
-node ./cli.js run examples/hello.yaml
-
-# 4. Render a leaderboard
+node ./cli.js run examples/hello.yaml --parallel --cache
 node ./cli.js leaderboard runs/hello-*.json
-
-# 5. Compare two runs
-node ./cli.js compare runs/hello-old.json runs/hello-new.json
 \`\`\`
+
+## Web UI
+
+Runs are written to `runs/` and auto-indexed in `runs/index.json`. The static site under `web/` reads that index and renders a leaderboard. Pages workflow deploys it to GitHub Pages on every master push.
 
 ## Status
 
-Phase 2 + 3 + much of Phase 5 shipped: run, leaderboard, compare, init, cache, diff. Three real-world example suites (hello, code-review, summarisation). Smoke tests via \`node --test\`. See PLAN.md for what is next.
+v0.2.0. Phase 4 (web UI) shipped. Phase 5 close (npm publish, homebrew) pending.
 
 ## License
 
