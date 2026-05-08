@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>smolbench leaderboard</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <header>
+    <h1>smolbench</h1>
+    <p class="tagline">Workload-specific LLM benchmarks. Pick a run.</p>
+  </header>
+  <main>
+    <section id="run-picker">
+      <label for="run-select">Run:</label>
+      <select id="run-select"></select>
+    </section>
+    <section id="leaderboard">
+      <table>
+        <thead>
+          <tr><th>Rank</th><th>Provider</th><th>Model</th><th>Quality</th><th>Cost (USD)</th><th>Latency (ms)</th><th>Score</th></tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </section>
+    <p class="hint">Drop a <code>runs/</code> folder next to this file (or generate one with <code>smolbench run</code>) to see real data.</p>
+  </main>
+  <footer>
+    <a href="https://github.com/ShageeshanT/smolbench">github.com/ShageeshanT/smolbench</a>
+  </footer>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
