@@ -1,0 +1,27 @@
+# Real world suite: extract structured JSON from unstructured text.
+# The judge scores on schema adherence and field correctness.
+
+suite: extraction
+prompts:
+  - id: invoice-line
+    system: |
+      Extract the fields and reply with STRICT JSON, no other text:
+      {"vendor": "...", "total_usd": <number>, "due_date": "YYYY-MM-DD"}
+    user: |
+      INVOICE
+      From: Acme Cloud Services
+      Amount due: \$1,247.50 USD
+      Due by: 15 June 2026
+    meta:
+      expected: \`{"vendor":"Acme Cloud Services","total_usd":1247.5,"due_date":"2026-06-15"}\`
+
+  - id: meeting-attendees
+    system: |
+      Extract attendee names from the calendar invite and reply with STRICT JSON:
+      {"attendees": ["...","..."]}
+    user: |
+      Subject: Q3 Strategy
+      Required: Anya Patel, Marcus Lee, Diana Owusu
+      Optional: Jin Park
+    meta:
+      expected: \`{"attendees":["Anya Patel","Marcus Lee","Diana Owusu","Jin Park"]}\`
