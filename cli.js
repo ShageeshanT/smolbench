@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// smolbench CLI. Phase 2: run + leaderboard + compare wired.
+// smolbench CLI. Phase 2 + 3 wired: run, leaderboard, compare, init, cache.
 
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { join, basename } from "node:path";
@@ -7,6 +7,8 @@ import { parseYaml } from "./lib/yaml.js";
 import { register } from "./lib/registry.js";
 import { runSuite } from "./lib/runner.js";
 import { rankRows } from "./lib/score.js";
+import { clearAll, cacheDir } from "./lib/cache.js";
+import { diff, regressions } from "./lib/diff.js";
 import { createOpenAICompatProvider } from "./lib/providers/openai-compat.js";
 import { createAnthropicProvider } from "./lib/providers/anthropic.js";
 import { createGoogleProvider } from "./lib/providers/google.js";
@@ -17,8 +19,9 @@ const HELP = `smolbench, workload-specific LLM benchmarks.
 Usage:
   smolbench run <suite.yaml>     Run a prompt suite across registered providers
   smolbench leaderboard <run>    Render a markdown leaderboard from a run JSON
-  smolbench compare <a> <b>      Diff two runs
+  smolbench compare <a> <b>      Diff two runs side by side
   smolbench init                 Scaffold .smolbench.yaml in cwd
+  smolbench cache clear          Clear the on-disk result cache
 `;
 
 function loadConfig() {
@@ -38,62 +41,83 @@ function configureProviders(cfg) {
 }
 
 async function cmdRun(suitePath) {
-  if (!suitePath) { process.stderr.write("smolbench: run needs <suite.yaml>\n"); process.exit(2); }
+  if (!suitePath) die("run needs <suite.yaml>");
   configureProviders(loadConfig());
   const suite = parseYaml(readFileSync(suitePath, "utf8"));
-  if (!suite?.prompts?.length) { process.stderr.write("smolbench: suite has no prompts\n"); process.exit(2); }
+  if (!suite?.prompts?.length) die("suite has no prompts");
   const rows = await runSuite(suite.prompts);
   const ts = new Date().toISOString().replace(/[:.]/g, "-");
-  const outDir = join(process.cwd(), "runs");
-  mkdirSync(outDir, { recursive: true });
-  const outPath = join(outDir, `${basename(suitePath, ".yaml")}-${ts}.json`);
+  mkdirSync(join(process.cwd(), "runs"), { recursive: true });
+  const outPath = join(process.cwd(), "runs", `${basename(suitePath, ".yaml")}-${ts}.json`);
   writeFileSync(outPath, JSON.stringify({ suite: suite.suite || basename(suitePath, ".yaml"), at: ts, rows }, null, 2));
   process.stdout.write(`smolbench: wrote ${outPath} (${rows.length} rows)\n`);
 }
 
 function cmdLeaderboard(runPath) {
-  if (!runPath) { process.stderr.write("smolbench: leaderboard needs <run.json>\n"); process.exit(2); }
+  if (!runPath) die("leaderboard needs <run.json>");
   const run = JSON.parse(readFileSync(runPath, "utf8"));
   const ranked = rankRows(run.rows || []);
-  const out = [];
-  out.push(`# ${run.suite || "smolbench run"}`);
-  out.push("");
-  out.push(`Run at: \`${run.at || "?"}\` | Rows: ${ranked.length}`);
-  out.push("");
-  out.push("| Rank | Provider | Model | Quality | Cost (USD) | Latency (ms) | Score |");
-  out.push("|---|---|---|---|---|---|---|");
+  const out = [`# ${run.suite || "smolbench run"}`, "", `Run at: \`${run.at || "?"}\` | Rows: ${ranked.length}`, "",
+    "| Rank | Provider | Model | Quality | Cost (USD) | Latency (ms) | Score |",
+    "|---|---|---|---|---|---|---|"];
   ranked.forEach((r, i) => {
     const q = typeof r.quality === "number" ? r.quality.toFixed(2) : "-";
     const c = typeof r.cost === "number" ? r.cost.toFixed(6) : "-";
-    const l = r.latencyMs ?? "-";
-    const s = r._score?.total != null ? r._score.total.toFixed(4) : "-";
-    out.push(`| ${i + 1} | ${r.provider} | ${r.model} | ${q} | ${c} | ${l} | ${s} |`);
+    out.push(`| ${i + 1} | ${r.provider} | ${r.model} | ${q} | ${c} | ${r.latencyMs ?? "-"} | ${r._score?.total?.toFixed(4) ?? "-"} |`);
   });
   process.stdout.write(out.join("\n") + "\n");
 }
 
 function cmdCompare(aPath, bPath) {
-  if (!aPath || !bPath) { process.stderr.write("smolbench: compare needs <runA.json> <runB.json>\n"); process.exit(2); }
+  if (!aPath || !bPath) die("compare needs <runA.json> <runB.json>");
   const a = JSON.parse(readFileSync(aPath, "utf8"));
   const b = JSON.parse(readFileSync(bPath, "utf8"));
-  const indexA = new Map();
-  for (const r of a.rows || []) indexA.set(`${r.provider}:${r.model}:${r.promptId}`, r);
-  const lines = [];
-  lines.push(`# Comparison: ${basename(aPath)} vs ${basename(bPath)}`);
-  lines.push("");
-  lines.push("| Provider | Model | Prompt | Δ latency (ms) | Δ cost (USD) | Δ quality |");
-  lines.push("|---|---|---|---|---|---|");
-  for (const r of b.rows || []) {
-    const k = `${r.provider}:${r.model}:${r.promptId}`;
-    const aRow = indexA.get(k);
-    if (!aRow) continue;
-    const dl = (r.latencyMs || 0) - (aRow.latencyMs || 0);
-    const dc = (r.cost || 0) - (aRow.cost || 0);
-    const dq = (r.quality || 0) - (aRow.quality || 0);
-    lines.push(`| ${r.provider} | ${r.model} | ${r.promptId} | ${dl >= 0 ? "+" : ""}${dl} | ${dc.toFixed(6)} | ${dq.toFixed(2)} |`);
+  const rows = diff(a, b);
+  const lines = [`# Comparison: ${basename(aPath)} vs ${basename(bPath)}`, "",
+    "| Provider | Model | Prompt | Δ latency (ms) | Δ cost (USD) | Δ quality |",
+    "|---|---|---|---|---|---|"];
+  for (const r of rows) {
+    lines.push(`| ${r.provider} | ${r.model} | ${r.promptId} | ${r.dLatencyMs >= 0 ? "+" : ""}${r.dLatencyMs} | ${r.dCost.toFixed(6)} | ${r.dQuality.toFixed(2)} |`);
   }
+  const regs = regressions(rows);
+  if (regs.length) lines.push("", `**Regressions: ${regs.length}**`, "(latency >500ms, cost >\$0.001, or quality <-0.1)");
   process.stdout.write(lines.join("\n") + "\n");
 }
+
+function cmdInit() {
+  const path = join(process.cwd(), ".smolbench.yaml");
+  if (existsSync(path)) die(`.smolbench.yaml already exists at ${path}`);
+  const tpl = `# smolbench config. Run: smolbench run examples/hello.yaml
+providers:
+  - id: anthropic
+    kind: anthropic
+    model: claude-haiku-4-5
+    # apiKey: \$ANTHROPIC_API_KEY (default)
+  - id: nvidia
+    kind: nvidia
+    model: meta/llama-3.3-70b-instruct
+    # apiKey: \$NVIDIA_API_KEY (default)
+  - id: google
+    kind: google
+    model: gemini-2.5-flash
+    # apiKey: \$GOOGLE_API_KEY (default)
+
+# Optional: override scoring weights (must sum to 1.0)
+# weights:
+#   quality: 0.5
+#   cost: 0.25
+#   latency: 0.25
+`;
+  writeFileSync(path, tpl);
+  process.stdout.write(`smolbench: scaffolded ${path}\n`);
+}
+
+function cmdCache(sub) {
+  if (sub === "clear") { clearAll(); process.stdout.write(`smolbench: cache cleared (${cacheDir()})\n`); }
+  else die(`cache subcommand "${sub || ""}" unknown, try: cache clear`);
+}
+
+function die(msg) { process.stderr.write(`smolbench: ${msg}\n`); process.exit(2); }
 
 async function main() {
   const [cmd, ...args] = process.argv.slice(2);
@@ -101,8 +125,9 @@ async function main() {
   if (cmd === "run") return cmdRun(args[0]);
   if (cmd === "leaderboard") return cmdLeaderboard(args[0]);
   if (cmd === "compare") return cmdCompare(args[0], args[1]);
-  process.stderr.write(`smolbench: command "${cmd}" not implemented yet, see PLAN.md\n`);
-  process.exit(2);
+  if (cmd === "init") return cmdInit();
+  if (cmd === "cache") return cmdCache(args[0]);
+  die(`command "${cmd}" not implemented`);
 }
 
-main().catch((e) => { process.stderr.write(`smolbench: ${e.message}\n`); process.exit(1); });
+main().catch((e) => die(e.message));
