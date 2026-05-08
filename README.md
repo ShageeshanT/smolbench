@@ -37,7 +37,7 @@ node ./cli.js compare runs/hello-old.json runs/hello-new.json
 
 ## Status
 
-Phase 2 + 3 shipped: run, leaderboard, compare, init, cache, diff. Three real-world example suites (hello, code-review, summarisation). Smoke tests via \`node --test\`. See PLAN.md for what is next.
+Phase 2 + 3 + much of Phase 5 shipped: run, leaderboard, compare, init, cache, diff. Three real-world example suites (hello, code-review, summarisation). Smoke tests via \`node --test\`. See PLAN.md for what is next.
 
 ## License
 
