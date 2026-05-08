@@ -47,13 +47,13 @@ Tasks for the incremental commit loop. Each entry is a small, self-contained com
 
 ## Phase 5, distribution
 
-- [ ] CHANGELOG.md, semver release notes
-- [ ] .github/workflows/ci.yml, run smoke tests on push
-- [ ] .github/PULL_REQUEST_TEMPLATE.md
-- [ ] .github/ISSUE_TEMPLATE/bug.md
-- [ ] .github/ISSUE_TEMPLATE/feature.md
-- [ ] examples/classification.yaml, real-world suite
-- [ ] examples/extraction.yaml, JSON extraction suite
-- [ ] lib/format.js, text formatting helpers
+- [x] CHANGELOG.md, semver release notes
+- [x] .github/workflows/ci.yml, run smoke tests on push
+- [x] .github/PULL_REQUEST_TEMPLATE.md
+- [x] .github/ISSUE_TEMPLATE/bug.md
+- [x] .github/ISSUE_TEMPLATE/feature.md
+- [x] examples/classification.yaml, real-world suite
+- [x] examples/extraction.yaml, JSON extraction suite
+- [x] lib/format.js, text formatting helpers
 - [ ] npm publish dry-run
 - [ ] homebrew formula
