@@ -9,22 +9,32 @@
 <body>
   <header>
     <h1>smolbench</h1>
-    <p class="tagline">Workload-specific LLM benchmarks. Pick a run.</p>
+    <p class="tagline">Workload-specific LLM benchmarks. Pick a run, filter providers, sort columns.</p>
   </header>
   <main>
-    <section id="run-picker">
+    <section id="controls">
       <label for="run-select">Run:</label>
       <select id="run-select"></select>
+      <label for="provider-filter">Provider:</label>
+      <select id="provider-filter"><option value="all">All providers</option></select>
     </section>
     <section id="leaderboard">
       <table>
         <thead>
-          <tr><th>Rank</th><th>Provider</th><th>Model</th><th>Quality</th><th>Cost (USD)</th><th>Latency (ms)</th><th>Score</th></tr>
+          <tr>
+            <th data-key="_rank">Rank</th>
+            <th data-key="provider">Provider</th>
+            <th data-key="model">Model</th>
+            <th data-key="quality">Quality</th>
+            <th data-key="cost">Cost (USD)</th>
+            <th data-key="latencyMs">Latency (ms)</th>
+            <th data-key="_score">Score</th>
+          </tr>
         </thead>
         <tbody id="rows"></tbody>
       </table>
     </section>
-    <p class="hint">Drop a <code>runs/</code> folder next to this file (or generate one with <code>smolbench run</code>) to see real data.</p>
+    <p class="hint">Drop a <code>runs/</code> folder next to this file (or generate one with <code>smolbench run</code>).</p>
   </main>
   <footer>
     <a href="https://github.com/ShageeshanT/smolbench">github.com/ShageeshanT/smolbench</a>

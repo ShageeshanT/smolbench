@@ -16,14 +16,17 @@ body {
 }
 header h1 { margin: 0 0 .25rem; font-size: 1.75rem; letter-spacing: -.02em; }
 header .tagline { margin: 0 0 1.5rem; color: var(--muted); }
-#run-picker { margin-bottom: 1rem; display: flex; gap: .75rem; align-items: center; }
-#run-picker select {
+#controls { margin-bottom: 1rem; display: flex; gap: .75rem; align-items: center; flex-wrap: wrap; }
+#controls select, #controls input {
   background: var(--row); color: var(--fg); border: 1px solid var(--border);
   padding: .4rem .6rem; border-radius: 4px; font: inherit;
 }
 table { width: 100%; border-collapse: collapse; font-size: .92rem; }
 th, td { text-align: left; padding: .55rem .75rem; border-bottom: 1px solid var(--border); }
-th { color: var(--muted); font-weight: 600; }
+th { color: var(--muted); font-weight: 600; cursor: pointer; user-select: none; }
+th:hover { color: var(--fg); }
+th.sort-asc::after { content: " ↑"; color: var(--accent); }
+th.sort-desc::after { content: " ↓"; color: var(--accent); }
 tbody tr:nth-child(odd) { background: var(--row); }
 tbody tr.winner td:first-child { color: var(--accent); font-weight: 700; }
 code { background: var(--row); padding: .1rem .35rem; border-radius: 3px; font-size: .9em; }
