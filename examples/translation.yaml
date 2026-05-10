@@ -1,0 +1,18 @@
+suite: translation
+task: general
+prompts:
+  - id: en-to-fr-greeting
+    system: |
+      Translate the user's text to French. Reply with only the French translation, no quotes.
+    user: |
+      Good morning, hope you have a productive day.
+    meta:
+      expected: Bonjour, j'espère que vous passerez une journée productive.
+
+  - id: en-to-ja-question
+    system: |
+      Translate the user's text to Japanese. Reply with only the Japanese, no romaji.
+    user: |
+      Where is the nearest train station?
+    meta:
+      expected: 最寄りの駅はどこですか
