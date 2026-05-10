@@ -1,0 +1,18 @@
+suite: math-reasoning
+task: general
+prompts:
+  - id: word-problem
+    system: |
+      Solve the problem. Reply with only the integer answer, no working.
+    user: |
+      A train leaves at 9:15 and arrives at 11:48. How many minutes did the trip take?
+    meta:
+      expected: "153"
+
+  - id: percent
+    system: |
+      Reply with only the percentage as an integer, no symbols.
+    user: |
+      A shirt costs 80 USD on sale, original price was 100 USD. What percent is the discount?
+    meta:
+      expected: "20"
