@@ -1,0 +1,26 @@
+suite: factual-recall
+task: general
+prompts:
+  - id: capital
+    system: |
+      Reply with only the city name.
+    user: |
+      What is the capital of Australia?
+    meta:
+      expected: Canberra
+
+  - id: chemistry
+    system: |
+      Reply with only the element symbol.
+    user: |
+      What is the chemical symbol for gold?
+    meta:
+      expected: Au
+
+  - id: history
+    system: |
+      Reply with only the year as a 4 digit integer.
+    user: |
+      In what year did the Berlin Wall fall?
+    meta:
+      expected: "1989"
