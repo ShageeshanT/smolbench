@@ -1,0 +1,21 @@
+suite: function-calling
+task: extraction
+prompts:
+  - id: book-flight
+    system: |
+      Reply ONLY with STRICT JSON matching this schema:
+      {"function": "book_flight", "args": {"origin": "<IATA>", "destination": "<IATA>", "date": "YYYY-MM-DD"}}
+      Map city names to IATA codes. No prose.
+    user: |
+      Book me a flight from Colombo to Singapore for the 15th of June 2026.
+    meta:
+      expected: \`{"function":"book_flight","args":{"origin":"CMB","destination":"SIN","date":"2026-06-15"}}\`
+
+  - id: cancel-meeting
+    system: |
+      Reply ONLY with STRICT JSON:
+      {"function": "cancel_meeting", "args": {"id": "<string>"}}
+    user: |
+      Cancel meeting QXX-2026.
+    meta:
+      expected: \`{"function":"cancel_meeting","args":{"id":"QXX-2026"}}\`
