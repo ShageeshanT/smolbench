@@ -1,0 +1,21 @@
+suite: tool-use
+task: extraction
+prompts:
+  - id: pick-tool
+    system: |
+      You have these tools: search_web(query), get_weather(city), send_email(to, subject, body).
+      Reply with STRICT JSON: {"tool": "<name>", "arguments": {...}}.
+      Pick exactly one tool. No prose.
+    user: |
+      What is the weather in Colombo right now?
+    meta:
+      expected: \`{"tool":"get_weather","arguments":{"city":"Colombo"}}\`
+
+  - id: refuse-no-tool
+    system: |
+      You have these tools: search_web(query), get_weather(city), send_email(to, subject, body).
+      If no tool fits, reply with STRICT JSON: {"tool": null, "reason": "<short>"}. No prose.
+    user: |
+      Read my mind and tell me what I'm thinking.
+    meta:
+      expected: \`{"tool":null,"reason":"out of scope"}\`
