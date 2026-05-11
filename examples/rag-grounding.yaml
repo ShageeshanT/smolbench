@@ -1,0 +1,27 @@
+suite: rag-grounding
+task: extraction
+prompts:
+  - id: cite-the-doc
+    system: |
+      Answer ONLY using the provided context. If the answer is not in the context, reply "NOT IN CONTEXT".
+      Cite the section number you used in square brackets, e.g. [§2.1].
+    user: |
+      CONTEXT:
+      §1.0 Refund policy applies to purchases under 30 days old.
+      §2.1 Refunds are processed in 5 to 10 business days to the original payment method.
+      §3.0 Defective items are replaced free of charge for 12 months.
+
+      QUESTION: How long do refunds take?
+    meta:
+      expected: 5 to 10 business days [§2.1]
+
+  - id: out-of-context
+    system: |
+      Answer ONLY using the provided context. If the answer is not in the context, reply "NOT IN CONTEXT".
+    user: |
+      CONTEXT:
+      §1.0 Free shipping on orders over 100 USD.
+
+      QUESTION: What is the warranty period?
+    meta:
+      expected: NOT IN CONTEXT
