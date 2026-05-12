@@ -1,0 +1,32 @@
+suite: coding-style
+task: code
+prompts:
+  - id: name-the-smell
+    system: |
+      Name the code smell in two words or less, lowercase, no punctuation.
+    user: |
+      function process(d) {
+        if (d) {
+          if (d.user) {
+            if (d.user.profile) {
+              if (d.user.profile.address) {
+                return d.user.profile.address.city;
+              }
+            }
+          }
+        }
+      }
+    meta:
+      expected: deep nesting
+      tags: [js, refactor]
+
+  - id: name-the-bug-pattern
+    system: |
+      Name the bug pattern in two words or less, lowercase, no punctuation.
+    user: |
+      const config = {};
+      function setOption(k, v) { config[k] = v; }
+      setOption("__proto__", { admin: true });
+    meta:
+      expected: prototype pollution
+      tags: [js, security]
