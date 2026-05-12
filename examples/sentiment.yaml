@@ -1,0 +1,32 @@
+suite: sentiment
+task: classification
+prompts:
+  - id: positive-review
+    system: |
+      Classify the sentiment as one of: positive, neutral, negative.
+      Reply with only the label, lowercase, no punctuation.
+    user: |
+      Best phone I have ever owned. Battery lasts two days, camera is honest, no bloat.
+    meta:
+      expected: positive
+      tags: [retail, en]
+
+  - id: mixed-review
+    system: |
+      Classify the sentiment as one of: positive, neutral, negative.
+      Reply with only the label, lowercase, no punctuation.
+    user: |
+      Build quality is great but the software keeps crashing every other launch.
+    meta:
+      expected: neutral
+      tags: [retail, en]
+
+  - id: harsh-review
+    system: |
+      Classify the sentiment as one of: positive, neutral, negative.
+      Reply with only the label, lowercase, no punctuation.
+    user: |
+      Absolutely terrible, refund denied, support never replied. Avoid.
+    meta:
+      expected: negative
+      tags: [retail, en]
