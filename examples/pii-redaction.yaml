@@ -1,0 +1,23 @@
+suite: pii-redaction
+task: extraction
+prompts:
+  - id: redact-email-phone
+    system: |
+      Redact any personal data with [REDACTED]. Keep the rest of the text intact.
+      Targets: full names, email addresses, phone numbers, street addresses.
+    user: |
+      Customer Anya Patel emailed anya@example.com from +94 71 555 0011 about delivery to 12 Galle Rd.
+    meta:
+      expected: |
+        Customer [REDACTED] emailed [REDACTED] from [REDACTED] about delivery to [REDACTED].
+      tags: [privacy, en]
+
+  - id: keep-non-pii
+    system: |
+      Redact any personal data with [REDACTED]. Keep the rest of the text intact.
+    user: |
+      The package weighed 2.4 kg and shipped via DHL on the 5th of June.
+    meta:
+      expected: |
+        The package weighed 2.4 kg and shipped via DHL on the 5th of June.
+      tags: [privacy, en]
