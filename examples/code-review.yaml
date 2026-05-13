@@ -1,39 +1,135 @@
-# Real world suite: short snippets of code with a known issue, ask the model
-# to identify the bug and propose a one-line fix. The judge scores on whether
-# the actual bug is named.
-
 suite: code-review
-prompts:
-  - id: off-by-one
-    system: |
-      You are a senior code reviewer. Reply in 2 sentences: name the bug, propose the fix.
-    user: |
-      Review:
-      function lastN(arr, n) {
-        return arr.slice(arr.length - n - 1);
-      }
-    meta:
-      expected: off-by-one in the slice end index, should be arr.length - n
-      lang: javascript
+description: Realistic code review prompts covering bugs, smells, and security issues
+task: code
+judge:
+  rubric: code
+  threshold: 0.7
 
-  - id: race-condition
+prompts:
+  - id: null-deref-optional-chaining
     system: |
-      You are a senior code reviewer. Reply in 2 sentences: name the bug, propose the fix.
+      You are a senior code reviewer. Given a small patch, name the single most
+      important issue introduced or remaining. Reply with one short sentence.
     user: |
-      Review:
-      let total = 0;
-      await Promise.all(items.map(async (i) => { total += await fetchPrice(i); }));
-    meta:
-      expected: race on shared total accumulator, use Promise.all results not mutation
-      lang: javascript
+      diff --git a/user.js b/user.js
+      @@ -3,5 +3,5 @@ export function getDisplayName(user) {
+      -  return user.name.trim();
+      +  return user.name?.trim();
+       }
+    expected:
+      contains: ["does not handle", "still returns undefined", "missing fallback", "no default"]
+
+  - id: off-by-one-loop
+    system: |
+      You are a code reviewer. Find the bug in this function.
+    user: |
+      function lastN(arr, n) {
+        const out = [];
+        for (let i = arr.length - n; i <= arr.length; i++) {
+          out.push(arr[i]);
+        }
+        return out;
+      }
+    expected:
+      contains: ["off-by-one", "off by one", "extra iteration", "undefined", "out of bounds"]
+
+  - id: async-without-await
+    system: |
+      Review this function. What is wrong?
+    user: |
+      async function saveUser(user) {
+        const validated = validate(user);
+        db.insert(validated);
+        return { ok: true };
+      }
+    expected:
+      contains: ["await", "race", "unhandled promise", "fire and forget", "returns before"]
 
   - id: sql-injection
     system: |
-      You are a senior code reviewer. Reply in 2 sentences: name the bug, propose the fix.
+      Review this database call for security issues.
     user: |
-      Review:
-      const q = "SELECT * FROM users WHERE name = '" + req.query.name + "'";
-      db.query(q);
-    meta:
-      expected: SQL injection, use parameterised query
-      lang: javascript
+      app.get("/users/:id", (req, res) => {
+        const id = req.params.id;
+        db.query(\`SELECT * FROM users WHERE id = '\${id}'\`, (err, rows) => {
+          res.json(rows);
+        });
+      });
+    expected:
+      contains: ["SQL injection", "parameterized", "prepared statement", "string interpolation", "sanitize"]
+
+  - id: missing-unsubscribe
+    system: |
+      Find the resource leak in this React-style hook.
+    user: |
+      function useTicker(onTick) {
+        useEffect(() => {
+          const id = setInterval(onTick, 1000);
+        }, []);
+      }
+    expected:
+      contains: ["cleanup", "clearInterval", "memory leak", "unmount", "return"]
+
+  - id: shared-state-race
+    system: |
+      Two requests can call this in parallel. What's the bug?
+    user: |
+      let counter = 0;
+      async function increment() {
+        const current = counter;
+        await sleep(10);
+        counter = current + 1;
+      }
+    expected:
+      contains: ["race condition", "not atomic", "lost update", "concurrent", "data race"]
+
+  - id: catch-and-swallow
+    system: |
+      Review this error handling.
+    user: |
+      try {
+        await chargeCustomer(order);
+        await sendReceipt(order);
+      } catch (e) {
+        console.log("oops");
+      }
+    expected:
+      contains: ["swallows", "loses error", "rethrow", "silent failure", "log the error"]
+
+  - id: weak-randomness
+    system: |
+      Review the choice of randomness here.
+    user: |
+      function newSessionToken() {
+        return Math.random().toString(36).slice(2);
+      }
+    expected:
+      contains: ["Math.random", "not cryptographically", "predictable", "crypto.randomBytes", "insecure"]
+
+  - id: leaky-error-message
+    system: |
+      Review the response shape.
+    user: |
+      app.post("/login", async (req, res) => {
+        try {
+          const u = await authenticate(req.body);
+          res.json({ ok: true, u });
+        } catch (e) {
+          res.status(500).json({ ok: false, error: e.stack });
+        }
+      });
+    expected:
+      contains: ["stack trace", "information disclosure", "leaks internals", "do not return", "sanitize"]
+
+  - id: missing-input-validation
+    system: |
+      Review the input handling.
+    user: |
+      app.post("/transfer", (req, res) => {
+        const { from, to, amount } = req.body;
+        db.run("UPDATE accounts SET balance = balance - ? WHERE id = ?", [amount, from]);
+        db.run("UPDATE accounts SET balance = balance + ? WHERE id = ?", [amount, to]);
+        res.json({ ok: true });
+      });
+    expected:
+      contains: ["validation", "negative amount", "authorization", "no transaction", "atomicity"]
