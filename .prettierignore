@@ -1,0 +1,6 @@
+node_modules
+.smolbench
+coverage
+dist
+*.md
+CHANGELOG.md
