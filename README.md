@@ -1,48 +1,30 @@
 # smolbench
 
-Workload-specific micro-benchmarks for LLM-powered apps. v0.5.0.
+A tiny, honest benchmark for evaluating LLMs on real-world tasks.
 
-## What you get
+[![CI](https://github.com/ShageeshanT/smolbench/actions/workflows/ci.yml/badge.svg)](https://github.com/ShageeshanT/smolbench/actions/workflows/ci.yml)
+[![npm](https://img.shields.io/npm/v/smolbench?logo=npm)](https://www.npmjs.com/package/smolbench)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Downloads](https://img.shields.io/npm/dm/smolbench?logo=npm)](https://www.npmjs.com/package/smolbench)
 
-- 11 provider adapters: Anthropic, Google, NVIDIA NIM, OpenRouter, Together, Groq, Cohere, Mistral, Perplexity, plus generic OpenAI-compat
-- 5 task rubrics (general, code, classification, extraction, summarisation) plus your own under `.smolbench/rubrics/`
-- 13 example suites covering hello, code-review, summarisation, classification, extraction, translation, math reasoning, factual recall, RAG grounding, tool use, function calling, sentiment, PII redaction, coding style
-- Composite scoring (latency + cost + LLM judge quality), judge ensemble option, cost ceiling guard
-- Result cache, retries with backoff, parallel runs, run history (JSONL), trend analysis, regression flagger
-- Webhook notifications (Slack, Discord, generic), OpenTelemetry exporter
-- Static web UI with provider filter and column sort, GitHub Pages deploy
-- HTML, CSV, markdown report exports
-- Suite composition (`includes:`), tag filtering, streaming response parser, dotenv loader
-- 0 production dependencies. Stdlib only.
+## Quick start
 
-## Install
+```bash
+npm install -g smolbench
+smolbench run examples/test-suite.yaml
+smolbench estimate          # show cost-per-call for all providers
+smolbench cache stats       # show cache entry counts
+```
 
-\`\`\`bash
-git clone https://github.com/ShageeshanT/smolbench.git
-cd smolbench
-\`\`\`
+## Features
 
-## 30-second quick start
+- **Cache**: Results cached at `~/.smolbench/cache/` -- re-run without re-executing
+- **Cost guards**: `--max-cost $` aborts a run if projected cost exceeds your budget
+- **Multilingual suites**: Sinhala, Tamil, Japanese, Spanish, and more
+- **Plugin providers**: Bring your own provider via `~/.smolbench/providers/`
+- **Statistical rigor**: Replicates, confidence intervals, judge consensus
+- **GitHub Action**: Drop into any repo with one line
 
-\`\`\`bash
-node ./cli.js init
-export ANTHROPIC_API_KEY=...
-export NVIDIA_API_KEY=...
-node ./cli.js run examples/hello.yaml --parallel --cache
-node ./cli.js leaderboard runs/hello-*.json
-node ./cli.js export runs/hello-*.json --format html --out report.html
-\`\`\`
+## Documentation
 
-Run every example to smoke-test the whole pipeline:
-
-\`\`\`bash
-npm run bench:all
-\`\`\`
-
-## Docs
-
-- `docs/providers.md`, `docs/PROMPTING.md`, `docs/ADVANCED.md`, `docs/ARCHITECTURE.md`, `docs/FAQ.md`, `docs/SECURITY.md`, `docs/CODE_OF_CONDUCT.md`
-
-## License
-
-MIT.
+See [docs/](docs/) for full guides.
