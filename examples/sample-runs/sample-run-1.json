@@ -1,0 +1,34 @@
+{
+  "id": "run-001",
+  "ts": 1778656547919,
+  "provider": "openai",
+  "model": "gpt-4o-mini",
+  "suite": "test-suite",
+  "totalCostUsd": 0.0234,
+  "results": [
+    {
+      "promptId": "p1",
+      "score": 0.923,
+      "costUsd": 0.0012,
+      "latencyMs": 840,
+      "passed": true,
+      "output": "Summarised in 2 sentences."
+    },
+    {
+      "promptId": "p2",
+      "score": 0.881,
+      "costUsd": 0.0014,
+      "latencyMs": 920,
+      "passed": true,
+      "output": "Translation correct with minor nuance."
+    },
+    {
+      "promptId": "p3",
+      "score": 0.412,
+      "costUsd": 0.0009,
+      "latencyMs": 760,
+      "passed": false,
+      "output": "Off-topic, conflated two entities."
+    }
+  ]
+}
