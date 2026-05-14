@@ -1,6 +1,6 @@
 {
   "name": "smolbench",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "A tiny, honest benchmark for evaluating LLMs on real-world tasks",
   "main": "lib/cli.js",
   "bin": {
