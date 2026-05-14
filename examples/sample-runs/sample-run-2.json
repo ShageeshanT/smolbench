@@ -1,0 +1,34 @@
+{
+  "id": "run-002",
+  "ts": 1778742947919,
+  "provider": "deepseek",
+  "model": "deepseek-chat-v2",
+  "suite": "test-suite",
+  "totalCostUsd": 0.0041,
+  "results": [
+    {
+      "promptId": "p1",
+      "score": 0.871,
+      "costUsd": 0.0003,
+      "latencyMs": 1200,
+      "passed": true,
+      "output": "Good summary, slightly verbose."
+    },
+    {
+      "promptId": "p2",
+      "score": 0.833,
+      "costUsd": 0.0004,
+      "latencyMs": 1350,
+      "passed": true,
+      "output": "Accurate translation."
+    },
+    {
+      "promptId": "p3",
+      "score": 0.654,
+      "costUsd": 0.0002,
+      "latencyMs": 980,
+      "passed": false,
+      "output": "Partial match on entity."
+    }
+  ]
+}
