@@ -6,6 +6,7 @@ A tiny, honest benchmark for evaluating LLMs on real-world tasks.
 [![npm](https://img.shields.io/npm/v/smolbench?logo=npm)](https://www.npmjs.com/package/smolbench)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Downloads](https://img.shields.io/npm/dm/smolbench?logo=npm)](https://www.npmjs.com/package/smolbench)
+[![Dashboard](https://img.shields.io/badge/Dashboard-GitHub%20Pages-blue?logo=github)](https://shageeshant.github.io/smolbench/)
 
 ## Quick start
 
@@ -15,6 +16,18 @@ smolbench run examples/test-suite.yaml
 smolbench estimate          # show cost-per-call for all providers
 smolbench cache stats       # show cache entry counts
 ```
+
+## Live dashboard
+
+Results are visualised at **https://shageeshant.github.io/smolbench/**
+
+Features:
+- Sortable leaderboard by provider, model, score, cost, latency
+- Cost vs quality scatter chart
+- Latency CDF per provider
+- Side-by-side diff of two runs
+- Filter by provider, suite, or search
+- Share links via URL deep linking
 
 ## Features
 
