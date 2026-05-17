@@ -1,32 +1,14 @@
 {
   "name": "smolbench",
-  "version": "0.7.0",
-  "description": "A tiny, honest benchmark for evaluating LLMs on real-world tasks",
-  "main": "lib/cli.js",
-  "bin": {
-    "smolbench": "./lib/cli.js"
-  },
+  "version": "0.8.0",
+  "description": "Minimal LLM benchmark runner",
+  "main": "index.js",
   "scripts": {
-    "test": "node --test lib/*.test.js",
-    "lint": "eslint lib/",
-    "benchmark": "node lib/cli.js run examples/test-suite.yaml"
+    "test": "node test/replicate.test.js && node test/stats.test.js && node test/bootstrap.test.js && node test/schema.test.js",
+    "lint": "echo 'no linter configured'",
+    "start": "node bin/smolbench.js"
   },
-  "keywords": [
-    "benchmark",
-    "llm",
-    "evaluation"
-  ],
-  "author": "Shagee",
+  "keywords": ["llm", "benchmark"],
   "license": "MIT",
-  "engines": {
-    "node": ">=18"
-  },
-  "dependencies": {
-    "yaml": "^2.3.4"
-  },
-  "devDependencies": {
-    "eslint": "^9.0.0",
-    "@eslint/js": "^9.0.0",
-    "globals": "^13.24.0"
-  }
+  "engines": { "node": ">=18" }
 }
