@@ -1,44 +1,43 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>smolbench leaderboard</title>
-  <link rel="stylesheet" href="./style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>smolbench dashboard</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <header>
     <h1>smolbench</h1>
-    <p class="tagline">Workload-specific LLM benchmarks. Pick a run, filter providers, sort columns.</p>
+    <p>A tiny, honest benchmark for evaluating LLMs</p>
+    <div id="controls">
+      <input id="search" type="text" placeholder="Filter runs..." />
+      <select id="provider-filter"><option value="">All providers</option></select>
+      <select id="suite-filter"><option value="">All suites</option></select>
+    </div>
   </header>
+
   <main>
-    <section id="controls">
-      <label for="run-select">Run:</label>
-      <select id="run-select"></select>
-      <label for="provider-filter">Provider:</label>
-      <select id="provider-filter"><option value="all">All providers</option></select>
+    <section id="summary-cards"></section>
+    <section id="tabs">
+      <button class="tab active" data-tab="leaderboard">Leaderboard</button>
+      <button class="tab" data-tab="scatter">Cost vs Quality</button>
+      <button class="tab" data-tab="cdf">Latency CDF</button>
+      <button class="tab" data-tab="diff">Diff View</button>
     </section>
-    <section id="leaderboard">
-      <table>
-        <thead>
-          <tr>
-            <th data-key="_rank">Rank</th>
-            <th data-key="provider">Provider</th>
-            <th data-key="model">Model</th>
-            <th data-key="quality">Quality</th>
-            <th data-key="cost">Cost (USD)</th>
-            <th data-key="latencyMs">Latency (ms)</th>
-            <th data-key="_score">Score</th>
-          </tr>
-        </thead>
-        <tbody id="rows"></tbody>
-      </table>
-    </section>
-    <p class="hint">Drop a <code>runs/</code> folder next to this file (or generate one with <code>smolbench run</code>).</p>
+    <div id="tab-content"></div>
   </main>
+
   <footer>
-    <a href="https://github.com/ShageeshanT/smolbench">github.com/ShageeshanT/smolbench</a>
+    <p>Built with <a href="https://github.com/ShageeshanT/smolbench">smolbench</a></p>
   </footer>
-  <script type="module" src="./app.js"></script>
+
+  <script src="web/runs-loader.js"></script>
+  <script src="web/leaderboard.js"></script>
+  <script src="web/scatter.js"></script>
+  <script src="web/cdf.js"></script>
+  <script src="web/diff.js"></script>
+  <script src="web/filters.js"></script>
+  <script src="web/share.js"></script>
 </body>
 </html>
