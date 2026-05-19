@@ -2,41 +2,30 @@
 
 All notable changes to smolbench. Format follows Keep a Changelog, dates ISO.
 
-## [0.3.0] - 2026-05-08
+## [0.4.0] - 2026-05-09
 
 ### Added
 
-- `lib/retries.js`: exponential backoff retry helper, full jitter, retries on 429 and 5xx.
-- Provider adapters now wrap fetch in `withRetries` (3 attempts default, override per provider).
-- `smolbench run --providers a,b`: run only the named subset of registered providers.
-- `smolbench run --filter id1,id2`: run only the named prompt ids from the suite.
-- `smolbench export <run> --format html|csv|md [--out path]`: export a run as a self-contained HTML report, CSV, or markdown.
-- `lib/report-html.js`: dark-mode single-file HTML renderer, no CDN.
-- `lib/report-csv.js`: CSV exporter with proper field escaping.
-- `smolbench validate <suite.yaml>`: schema check on suite YAML, surfaces missing ids, missing prompts, duplicate ids.
-- `scripts/npm-publish-dry.sh`: pre-flight pack + tests before `npm publish`.
-- `Formula/smolbench.rb`: Homebrew formula for tap install.
+- `lib/streaming.js`: SSE parser for OpenAI-compatible streaming responses, async iterator of content deltas.
+- `lib/suite-compose.js`: suites can `include:` other suites by relative path, ids namespaced `<suite>::<id>`, cycles rejected.
+- `lib/runs-db.js`: JSONL run history at `.smolbench/runs.jsonl`, append per run.
+- `lib/trends.js`: per-(provider, model) series + first-vs-last regression flagger.
+- `lib/notify.js`: webhook poster for Slack, Discord, generic. Includes `summarise()` helper.
+- New providers: Cohere (native chat shape), Mistral (OpenAI-compat), Perplexity (OpenAI-compat).
+- New example suites: rag-grounding, tool-use, function-calling.
+- New tests: streaming SSE parser, suite compose, notify summarise, trends regression.
+- New docs: `docs/ADVANCED.md` (streaming, composition, history, webhooks, ceilings), `docs/ARCHITECTURE.md`.
+- `scripts/bench.sh`: one-shot local benchmark wrapper, runs + leaderboards.
+- `npm run bench` shortcut.
 
-### Changed
+## [0.3.0] - 2026-05-08
 
-- Bumped to 0.3.0 to mark Phase 5 close shipping.
+(see batch 2 for full notes)
 
 ## [0.2.0] - 2026-05-07
 
-### Added
-
-- Web UI: index.html, app.js, style.css, dark mode static leaderboard.
-- GitHub Pages deploy via `.github/workflows/pages.yml`.
-- `lib/version.js`, `smolbench --version`.
-- `smolbench run --parallel`, `--cache` flags.
-- `runs/index.json` auto regenerated.
+(see batch 1 for full notes)
 
 ## [0.1.0] - 2026-05-06
 
-### Added
-
-- Run, leaderboard, compare, init, cache clear commands.
-- Provider adapters (Anthropic, Google, NVIDIA, OpenAI-compat).
-- Composite scoring, LLM judge, pricing table, result cache, YAML reader, run diff.
-- Real-world suites: hello, code-review, summarisation, classification, extraction.
-- Smoke tests, CI workflow, PR + issue templates, CHANGELOG.
+(see initial release)
