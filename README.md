@@ -1,30 +1,55 @@
 # smolbench
 
-A tiny, honest benchmark for evaluating LLMs on real-world tasks.
+Workload-specific micro-benchmarks for LLM-powered apps. Run YOUR prompts against every provider in your stack, get a leaderboard for YOUR use case, not generic MMLU.
 
-[![CI](https://github.com/ShageeshanT/smolbench/actions/workflows/ci.yml/badge.svg)](https://github.com/ShageeshanT/smolbench/actions/workflows/ci.yml)
-[![npm](https://img.shields.io/npm/v/smolbench?logo=npm)](https://www.npmjs.com/package/smolbench)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Downloads](https://img.shields.io/npm/dm/smolbench?logo=npm)](https://www.npmjs.com/package/smolbench)
+## Why this exists
+
+Public benchmarks (MMLU, MT-Bench, HumanEval) tell you which model is best on someone else's tasks. They do not tell you which model is best for the prompts your app actually runs. smolbench closes that gap.
+
+## Install
+
+\`\`\`bash
+git clone https://github.com/ShageeshanT/smolbench.git
+cd smolbench
+\`\`\`
+
+Or via Homebrew (requires repo tag):
+
+\`\`\`bash
+brew tap ShageeshanT/smolbench https://github.com/ShageeshanT/smolbench.git
+brew install smolbench
+\`\`\`
 
 ## Quick start
 
-```bash
-npm install -g smolbench
-smolbench run examples/test-suite.yaml
-smolbench estimate          # show cost-per-call for all providers
-smolbench cache stats       # show cache entry counts
-```
+\`\`\`bash
+node ./cli.js init
+node ./cli.js run examples/hello.yaml --parallel --cache
+node ./cli.js leaderboard runs/hello-*.json
+node ./cli.js export runs/hello-*.json --format html --out report.html
+\`\`\`
 
-## Features
+## Commands
 
-- **Cache**: Results cached at `~/.smolbench/cache/` -- re-run without re-executing
-- **Cost guards**: `--max-cost $` aborts a run if projected cost exceeds your budget
-- **Multilingual suites**: Sinhala, Tamil, Japanese, Spanish, and more
-- **Plugin providers**: Bring your own provider via `~/.smolbench/providers/`
-- **Statistical rigor**: Replicates, confidence intervals, judge consensus
-- **GitHub Action**: Drop into any repo with one line
+| Command | What it does |
+|---|---|
+| `run <suite.yaml> [--parallel] [--cache] [--providers a,b] [--filter id1,id2]` | Execute a suite, write run JSON |
+| `leaderboard <run.json>` | Markdown leaderboard ranked by composite score |
+| `compare <a.json> <b.json>` | Per-prompt latency / cost / quality deltas |
+| `export <run.json> --format html|csv|md [--out path]` | Export run as HTML, CSV, or markdown |
+| `validate <suite.yaml>` | Schema-check a suite |
+| `init` | Scaffold `.smolbench.yaml` in cwd |
+| `cache clear` | Drop the on-disk result cache |
+| `--version` | Print version |
 
-## Documentation
+## Web UI
 
-See [docs/](docs/) for full guides.
+Runs are auto indexed in `runs/index.json`. The static site under `web/` reads that index. The Pages workflow deploys it on master push, live at `https://shageeshant.github.io/smolbench/`.
+
+## Status
+
+v0.3.0. Phases 1 through 5 shipped. See CHANGELOG and PLAN.md.
+
+## License
+
+MIT.
