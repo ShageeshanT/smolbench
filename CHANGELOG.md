@@ -1,22 +1,25 @@
 # Changelog
 
-## 0.9.0 (2026-05-17)
+## 0.8.0 (2026-05-16)
 
 ### Added
-- `lib/failure-categorizer.js` — category map plus `categorize(err, output)` resolving timeout, rate_limit, network_error, auth_error, parse_error, schema_mismatch, refusal, hallucination, empty_output, format_violation, context_overflow, budget_exceeded, unknown
-- `lib/diagnostics.js` — `buildDiagnostic`, `snapshotError`, `snapshotOutput` for structured failure records
-- `lib/failure-store.js` — JSONL append/read/clear at `~/.smolbench/failures.jsonl`
-- `lib/failure-report.js` — `groupBy`, `summarize`, `textReport` for failure analytics
-- `lib/failure-html.js` — HTML failure dashboard
-- `lib/retry-policy.js` — category-aware retries with exponential backoff and jitter
-- `lib/runner-hook.js` — `recordFailure` glue between runner error path and the diagnostics pipeline
-- CLI: `smolbench failures [--format text|json|html] [--store <path>]`
-- CLI: `smolbench diagnose <run-id> [--store <path>]`
-- Tests: `test/failure-categorizer.test.js`, `test/diagnostics.test.js`, `test/failure-store.test.js`, `test/failure-report.test.js`, `test/retry-policy.test.js`
-- Docs: `docs/failure-diagnostics.md`, `docs/error-taxonomy.md`
+- `lib/replicate.js` — Run and ReplicatePool classes for managing statistical replicates
+- `lib/stats.js` — mean, variance, stdError, welchTTest, pValueFromT
+- `lib/ci.js` — t-distribution lookup and confidenceInterval utility
+- `lib/bootstrap.js` — resample, bootstrapCI, bootstrapSE for non-parametric CIs
+- `lib/effect-size.js` — cohensD, cohensDUnpooled, interpretCohenD
+- `lib/power.js` — powerAnalysis and requiredN for sample-size planning
+- `lib/output-schema.js` — JSON Schema definitions and validators
+- `lib/score.js` — scoreAll emits mean, ci_low, ci_high, n per row
+- `lib/judge-ensemble.js` — ensembleVote and ensembleStats with variance reporting
+- `lib/report.js` — TextReport and JSONReport generators
+- `lib/report-html.js` — HTML report with CI error-bar visualization
+- `bin/smolbench.js` — CLI entry point with --replicates, --estimate, --ci, --report flags
+- `test/replicate.test.js`, `test/stats.test.js`, `test/bootstrap.test.js`, `test/schema.test.js`
+- `docs/statistical-rigor.md` — documentation for all new statistical features
 
 ### Changed
-- `bin/smolbench.js` adds `failures` and `diagnose` subcommands
-- `lib/cli.js` recognises the new subcommands via the `known` set
+- Score rows now include ci_low, ci_high, n, variance per prompt
+- CLI supports --replicates N, --estimate, --ci, --report json|html|text
 
-## 0.8.0
+## 0.7.0
