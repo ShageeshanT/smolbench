@@ -2,9 +2,19 @@
 
 Workload-specific micro-benchmarks for LLM-powered apps. Run YOUR prompts against every provider in your stack, get a leaderboard for YOUR use case, not generic MMLU.
 
-## Why this exists
+## What is here
 
-Public benchmarks (MMLU, MT-Bench, HumanEval) tell you which model is best on someone else's tasks. They do not tell you which model is best for the prompts your app actually runs. smolbench closes that gap.
+- 8 provider adapters: Anthropic, Google, NVIDIA NIM, OpenAI-compat, OpenRouter, Together, Groq, Cohere, Mistral, Perplexity
+- 5 task types with calibrated judge rubrics: general, code, classification, extraction, summarisation
+- 8 example suites: hello, code-review, summarisation, classification, extraction, translation, math-reasoning, factual-recall, rag-grounding, tool-use, function-calling
+- Composite scoring: latency + cost + LLM-judge quality
+- Result cache, retries with backoff, parallel runs, cost ceilings
+- Run history (JSONL) + trends + regression flagger
+- Webhook notifications (Slack, Discord, generic)
+- Static web UI with provider filter and column sort
+- HTML, CSV, markdown report exports
+- Suite composition (`includes:`)
+- Streaming response parser (SSE) for sub-second feedback
 
 ## Install
 
@@ -13,42 +23,35 @@ git clone https://github.com/ShageeshanT/smolbench.git
 cd smolbench
 \`\`\`
 
-Or via Homebrew (requires repo tag):
+Or via Homebrew tap (after a tagged release):
 
 \`\`\`bash
 brew tap ShageeshanT/smolbench https://github.com/ShageeshanT/smolbench.git
 brew install smolbench
 \`\`\`
 
-## Quick start
+## 30-second quick start
 
 \`\`\`bash
-node ./cli.js init
-node ./cli.js run examples/hello.yaml --parallel --cache
-node ./cli.js leaderboard runs/hello-*.json
+node ./cli.js init                                            # scaffold .smolbench.yaml
+export ANTHROPIC_API_KEY=...
+export NVIDIA_API_KEY=...
+node ./cli.js run examples/hello.yaml --parallel --cache     # execute
+node ./cli.js leaderboard runs/hello-*.json                  # markdown
 node ./cli.js export runs/hello-*.json --format html --out report.html
 \`\`\`
 
-## Commands
-
-| Command | What it does |
-|---|---|
-| `run <suite.yaml> [--parallel] [--cache] [--providers a,b] [--filter id1,id2]` | Execute a suite, write run JSON |
-| `leaderboard <run.json>` | Markdown leaderboard ranked by composite score |
-| `compare <a.json> <b.json>` | Per-prompt latency / cost / quality deltas |
-| `export <run.json> --format html|csv|md [--out path]` | Export run as HTML, CSV, or markdown |
-| `validate <suite.yaml>` | Schema-check a suite |
-| `init` | Scaffold `.smolbench.yaml` in cwd |
-| `cache clear` | Drop the on-disk result cache |
-| `--version` | Print version |
-
-## Web UI
-
-Runs are auto indexed in `runs/index.json`. The static site under `web/` reads that index. The Pages workflow deploys it on master push, live at `https://shageeshant.github.io/smolbench/`.
-
 ## Status
 
-v0.3.0. Phases 1 through 5 shipped. See CHANGELOG and PLAN.md.
+v0.4.0. Phases 1 to 6 shipped. See `CHANGELOG.md` and `PLAN.md`.
+
+## Docs
+
+- `docs/providers.md` per-provider tuning
+- `docs/PROMPTING.md` suite authoring
+- `docs/ADVANCED.md` streaming, history, webhooks, composition
+- `docs/ARCHITECTURE.md` directory tour and extension points
+- `docs/FAQ.md`
 
 ## License
 
