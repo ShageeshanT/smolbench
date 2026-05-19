@@ -1,39 +1,27 @@
 # smolbench plan
 
-## Phase 1, scaffold
-- [x] all complete
+## Phase 1 to 6: shipped (see CHANGELOG)
 
-## Phase 2, scoring and cost
-- [x] all complete
+## Phase 7, ensemble and observability
+- [x] judge ensemble across multiple judges
+- [x] OpenTelemetry OTLP/HTTP exporter
+- [x] dotenv loader
+- [x] tag-based prompt filtering
+- [x] custom rubric loader for project-local rubrics
+- [x] config schema validator
+- [x] sentiment, pii-redaction, coding-style example suites
+- [x] run-all-examples and prune-history scripts
+- [x] SECURITY.md and CODE_OF_CONDUCT.md
+- [x] 0.5.0 release
 
-## Phase 3, persistence and UX
-- [x] all complete
+## Phase 8, ideas pool
 
-## Phase 4, web UI
-- [x] all complete
-
-## Phase 5, distribution and quality
-- [x] all complete (Homebrew formula, npm publish dry-run, retries, --providers, --filter, export, validate)
-
-## Phase 6, advanced features
-- [x] streaming response parser (lib/streaming.js)
-- [x] suite composition with includes (lib/suite-compose.js)
-- [x] persistent run history (lib/runs-db.js, JSONL)
-- [x] trend analysis across runs (lib/trends.js)
-- [x] webhook notifications (lib/notify.js, Slack + Discord + generic)
-- [x] additional providers: Cohere, Mistral, Perplexity
-- [x] real-world suites: rag-grounding, tool-use, function-calling
-- [x] docs/ADVANCED.md, docs/ARCHITECTURE.md
-- [x] scripts/bench.sh local quick bench
-- [x] 0.4.0 release
-
-## Phase 7, ideas pool
-
-- [ ] judge ensemble: average score across 2 or 3 judge models
-- [ ] cost ceiling enforced inside the runner (currently lib only)
-- [ ] suite hot-reload during long runs
-- [ ] Grafana / Prometheus exporter from runs-db
-- [ ] per-prompt latency histogram in the web UI
-- [ ] CLI `compare-trends` command using lib/trends
-- [ ] `smolbench bench-against` to A/B a model swap on a specific suite
-- [ ] OAuth/PAT support for private model endpoints
+- [ ] Prometheus textfile exporter from runs.jsonl
+- [ ] Grafana dashboard JSON for trend visualisation
+- [ ] CLI `tags` subcommand to list and filter
+- [ ] CLI `bench-against` to A/B a model swap on a saved suite
+- [ ] CLI `compare-trends` over runs.jsonl
+- [ ] OAuth2 token refresh for private endpoints
+- [ ] Suite hot-reload during long runs
+- [ ] Per-prompt latency histograms in the web UI
+- [ ] Persistent run database via SQLite (currently JSONL)
