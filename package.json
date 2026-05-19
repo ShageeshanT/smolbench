@@ -1,32 +1,27 @@
 {
   "name": "smolbench",
-  "version": "0.6.0",
-  "description": "A tiny, honest benchmark for evaluating LLMs on real-world tasks",
-  "main": "lib/cli.js",
-  "bin": {
-    "smolbench": "./lib/cli.js"
-  },
-  "scripts": {
-    "test": "node --test lib/*.test.js",
-    "lint": "eslint lib/",
-    "benchmark": "node lib/cli.js run examples/test-suite.yaml"
-  },
-  "keywords": [
-    "benchmark",
-    "llm",
-    "evaluation"
-  ],
-  "author": "Shagee",
+  "version": "0.3.0",
+  "description": "Workload-specific micro-benchmarks for LLM-powered apps",
+  "type": "module",
   "license": "MIT",
+  "bin": {
+    "smolbench": "./cli.js"
+  },
   "engines": {
     "node": ">=18"
   },
-  "dependencies": {
-    "yaml": "^2.3.4"
+  "files": [
+    "cli.js",
+    "lib/",
+    "examples/",
+    "web/",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "node --test test/",
+    "publish:dry": "bash scripts/npm-publish-dry.sh"
   },
-  "devDependencies": {
-    "eslint": "^9.0.0",
-    "@eslint/js": "^9.0.0",
-    "globals": "^13.24.0"
-  }
+  "keywords": ["llm", "benchmark", "evaluation", "ai"],
+  "repository": "github:ShageeshanT/smolbench"
 }
