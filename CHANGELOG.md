@@ -1,31 +1,24 @@
 # Changelog
 
-All notable changes to smolbench. Format follows Keep a Changelog, dates ISO.
-
-## [0.4.0] - 2026-05-09
+## [0.5.0] - 2026-05-10
 
 ### Added
 
-- `lib/streaming.js`: SSE parser for OpenAI-compatible streaming responses, async iterator of content deltas.
-- `lib/suite-compose.js`: suites can `include:` other suites by relative path, ids namespaced `<suite>::<id>`, cycles rejected.
-- `lib/runs-db.js`: JSONL run history at `.smolbench/runs.jsonl`, append per run.
-- `lib/trends.js`: per-(provider, model) series + first-vs-last regression flagger.
-- `lib/notify.js`: webhook poster for Slack, Discord, generic. Includes `summarise()` helper.
-- New providers: Cohere (native chat shape), Mistral (OpenAI-compat), Perplexity (OpenAI-compat).
-- New example suites: rag-grounding, tool-use, function-calling.
-- New tests: streaming SSE parser, suite compose, notify summarise, trends regression.
-- New docs: `docs/ADVANCED.md` (streaming, composition, history, webhooks, ceilings), `docs/ARCHITECTURE.md`.
-- `scripts/bench.sh`: one-shot local benchmark wrapper, runs + leaderboards.
-- `npm run bench` shortcut.
+- `lib/judge-ensemble.js`: average score across multiple judge models, gracefully drops failing judges from the mean.
+- `lib/otel-export.js`: OpenTelemetry OTLP/HTTP JSON exporter, one span per result row, smolbench attributes attached.
+- `lib/dotenv.js`: tiny .env loader (stdlib, no quote magic, does not overwrite existing env).
+- `lib/tags.js`: filter prompts by `meta.tags`, list all tags across a suite.
+- `lib/rubric-loader.js`: project-local rubrics under `.smolbench/rubrics/<task>.txt` override built-ins.
+- `lib/config-schema.js`: structural validator for `.smolbench.yaml` (kinds, ids, weights, baseUrl).
+- New example suites: sentiment, pii-redaction, coding-style.
+- New tests: judge-ensemble, dotenv, tags, config-schema, otel-export.
+- New scripts: `run-all-examples.sh`, `prune-history.sh`.
+- New docs: `docs/SECURITY.md`, `docs/CODE_OF_CONDUCT.md`.
 
-## [0.3.0] - 2026-05-08
+## [0.4.0] - 2026-05-09 (see batch 3 staging)
 
-(see batch 2 for full notes)
+## [0.3.0] - 2026-05-08 (see batch 2 staging)
 
-## [0.2.0] - 2026-05-07
+## [0.2.0] - 2026-05-07 (web UI)
 
-(see batch 1 for full notes)
-
-## [0.1.0] - 2026-05-06
-
-(see initial release)
+## [0.1.0] - 2026-05-06 (initial)
