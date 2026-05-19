@@ -1,14 +1,32 @@
 {
   "name": "smolbench",
-  "version": "0.9.0",
-  "description": "Minimal LLM benchmark runner",
-  "main": "index.js",
-  "scripts": {
-    "test": "node test/replicate.test.js && node test/stats.test.js && node test/bootstrap.test.js && node test/schema.test.js && node test/failure-categorizer.test.js && node test/diagnostics.test.js && node test/failure-store.test.js && node test/failure-report.test.js && node test/retry-policy.test.js",
-    "lint": "echo 'no linter configured'",
-    "start": "node bin/smolbench.js"
+  "version": "0.6.0",
+  "description": "A tiny, honest benchmark for evaluating LLMs on real-world tasks",
+  "main": "lib/cli.js",
+  "bin": {
+    "smolbench": "./lib/cli.js"
   },
-  "keywords": ["llm", "benchmark"],
+  "scripts": {
+    "test": "node --test lib/*.test.js",
+    "lint": "eslint lib/",
+    "benchmark": "node lib/cli.js run examples/test-suite.yaml"
+  },
+  "keywords": [
+    "benchmark",
+    "llm",
+    "evaluation"
+  ],
+  "author": "Shagee",
   "license": "MIT",
-  "engines": { "node": ">=18" }
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "yaml": "^2.3.4"
+  },
+  "devDependencies": {
+    "eslint": "^9.0.0",
+    "@eslint/js": "^9.0.0",
+    "globals": "^13.24.0"
+  }
 }
