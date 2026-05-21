@@ -1,28 +1,39 @@
 # PLAN.md
 
-## Current milestone: 0.8.0 — Statistical rigor
+## Current milestone: 0.9.0 — Failure categorization + diagnostics
 
 ### Theme
-Add replicates, confidence intervals, schema validation, and structured reporting so benchmark scores are statistically sound and comparable.
+Turn noisy benchmark runs into structured failure data so a flaky model is
+distinguishable from a misconfigured run, a refusal, or a schema regression.
 
 ### Commits (all complete)
-- [x] feat(replicate): Run and ReplicatePool classes
-- [x] feat(stats): mean, variance, stdError, welchTTest
-- [x] feat(ci): t-distribution lookup and confidence intervals
-- [x] feat(bootstrap): resample, bootstrapCI, bootstrapSE
-- [x] feat(effect): Cohen's d calculation
-- [x] feat(power): powerAnalysis and requiredN
-- [x] feat(schema): output-schema with JSON Schema validators
-- [x] feat(score): extend score.js to emit ci_low, ci_high, n
-- [x] feat(ensemble): ensemble variance reporting
-- [x] feat(report): TextReport and JSONReport
-- [x] feat(report-html): HTML report with error bars
-- [x] feat(cli): --replicates, --estimate, --ci, --report
-- [x] test: replicate, stats, bootstrap, schema
-- [x] docs: statistical-rigor.md
+- [x] feat(failure): lib/failure-categorizer.js
+- [x] feat(failure): lib/diagnostics.js
+- [x] feat(failure): lib/failure-store.js
+- [x] feat(failure): lib/failure-report.js
+- [x] feat(failure): lib/retry-policy.js
+- [x] feat(failure): lib/failure-html.js
+- [x] feat(failure): lib/runner-hook.js
+- [x] feat(cli): bin/smolbench.js failures + diagnose subcommands
+- [x] feat(cli): lib/cli.js recognises the new subcommands
+- [x] test: failure-categorizer
+- [x] test: diagnostics
+- [x] test: failure-store
+- [x] test: failure-report
+- [x] test: retry-policy
+- [x] docs: failure-diagnostics.md
+- [x] docs: error-taxonomy.md
 - [x] chore: version bump and changelog
 
-### Next: 0.9.0
-- Structured JSON output for CI dashboard integration
-- Persistent result storage (SQLite)
-- Web UI for browsing results
+### Next: 1.0.0 candidate work (batches 18-28 per master schedule)
+- Plugin architecture for providers
+- Real-world example suites at scale
+- GitHub Action wrapper and Marketplace
+- TUI live dashboard
+- Eval harness importers
+- Reproducibility and run provenance
+- Regression alerts + baselines
+- Multilingual + locale-aware
+- Programmatic API + TypeScript defs
+- Security hardening
+- Docs overhaul + tutorial site + v1.0.0 launch
