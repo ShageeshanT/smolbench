@@ -1,0 +1,29 @@
+2026-05-04T14:00:19.954Z run start: since=2026-05-04T00:00:00+05:30
+2026-05-04T14:00:27.994Z sending digest: 0 commits, 188 chars
+2026-05-04T14:01:35.495Z send failed (timeout != failure, gateway may still deliver): spawnSync openclaw ETIMEDOUT
+2026-05-04T14:03:50.148Z run start: since=2026-05-04T00:00:00+05:30
+2026-05-04T14:03:52.353Z sending digest: 15 commits, 1177 chars
+2026-05-04T14:04:58.818Z send failed (timeout != failure, gateway may still deliver): spawnSync openclaw ETIMEDOUT
+pushing 17 commit(s) to ShageeshanT/smolbench@master
+
+  [ 1/17] dbbcf80  feat(dashboard): web dashboard shell with dark mode, tab nav
+  [ 2/17] e34806c  feat(dashboard): hand-rolled dark-mode CSS, no Tailwind
+  [ 3/17] f80b9f1  feat(dashboard): runs-loader drops in runs.json and renders
+  [ 4/17] 027d99e  feat(dashboard): sortable leaderboard with provider/model/score columns
+  [ 5/17] ba5d1fd  feat(dashboard): SVG cost vs quality bubble chart
+  [ 6/17] 7f20703  feat(dashboard): latency CDF per provider
+  [ 7/17] b393ffe  feat(dashboard): two-run side-by-side diff view with delta panel
+  [ 8/17] 92fe65e  feat(dashboard): filter state, summary card updater
+  [ 9/17] d8c6e13  feat(dashboard): URL deep linking for filtered views
+  [10/17] 6e4ee26  feat(dashboard): sample run data for demo out of the box
+  [11/17] 612db78  feat(dashboard): second sample run for scatter/CDF demos
+  [12/17] 2d49984  feat(ci): GitHub Pages deploy workflow for web dashboard on master push
+  [13/17] 69a52b0  docs(readme): add dashboard badge and live dashboard URL
+  [14/17] 6eebef3  chore(version): 0.6.0 → 0.7.0
+  [15/17] bbde0c7  chore(changelog): add 0.7.0 entry
+  [16/17] 0fe8728  docs(plan): tick batch 15 done, 13 pending
+  [17/17] dd47547  docs(dashboard): add dashboard guide explaining tabs, sharing, adding runs
+
+done: 17 commit(s) pushed
+2026-05-17T04:18:00Z batch-20260516 push start: 20 commits, statistical rigor (0.7.0 -> 0.8.0)
+2026-05-17T04:19:30Z batch-20260516 push done: 20/20 to ShageeshanT/smolbench@master (last sha 10afeb1)
