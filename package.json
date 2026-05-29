@@ -4,7 +4,7 @@
   "description": "Minimal LLM benchmark runner",
   "main": "index.js",
   "scripts": {
-    "test": "node test/replicate.test.js && node test/stats.test.js && node test/bootstrap.test.js && node test/schema.test.js && node test/failure-categorizer.test.js && node test/diagnostics.test.js && node test/failure-store.test.js && node test/failure-report.test.js && node test/retry-policy.test.js",
+    "test": "node test/replicate.test.js && node test/stats.test.js && node test/bootstrap.test.js && node test/schema.test.js && node test/failure-categorizer.test.js && node test/diagnostics.test.js && node test/failure-store.test.js && node test/failure-report.test.js && node test/retry-policy.test.js && node test/score.test.js",
     "lint": "echo 'no linter configured'",
     "start": "node bin/smolbench.js"
   },
