@@ -1,0 +1,14 @@
+name: math-smoke
+description: Small deterministic prompts for local runner smoke checks.
+providers:
+  - id: mock
+    model: mock-accurate
+prompts:
+  - id: addition
+    input: 7 + 5
+    expect:
+      equals: "12"
+  - id: multiplication
+    input: 6 * 8
+    expect:
+      equals: "48"
