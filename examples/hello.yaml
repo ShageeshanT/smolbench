@@ -1,20 +1,14 @@
-# Sample prompt suite. Each entry is a Prompt as defined in lib/types.js.
-# Used by `smolbench run examples/hello.yaml` once the run command lands.
-
-suite: hello
+name: hello-smolbench
+description: Zero-key demo suite for first-time smolbench users.
+providers:
+  - id: mock
+    model: mock-fast
 prompts:
-  - id: addition
-    system: You are a precise calculator. Reply with only the integer.
-    user: What is 137 + 285?
-    meta:
-      expected: "422"
-
-  - id: capital
-    user: Reply with only the city name. What is the capital of Sri Lanka?
-    meta:
-      expected: "Sri Jayawardenepura Kotte"
-
-  - id: limerick
-    user: Write a five-line limerick about a benchmark that judges itself.
-    meta:
-      style: creative
+  - id: greeting
+    input: Say hello in one short sentence.
+    expect:
+      contains: hello
+  - id: tiny-reasoning
+    input: What is 2 + 2? Answer with only the number.
+    expect:
+      equals: "4"
