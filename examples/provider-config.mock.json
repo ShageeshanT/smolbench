@@ -1,0 +1,16 @@
+{
+  "providers": [
+    {
+      "id": "mock",
+      "model": "mock-fast",
+      "type": "mock",
+      "latencyMs": 25
+    },
+    {
+      "id": "mock",
+      "model": "mock-accurate",
+      "type": "mock",
+      "latencyMs": 60
+    }
+  ]
+}
